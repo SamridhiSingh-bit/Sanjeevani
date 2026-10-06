@@ -4,6 +4,28 @@
 # Log file
 *.log
 
+# Python environments and generated files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Local secrets and generated frontend assets
+.env
+.env.*
+!**/.env.example
+node_modules/
+dist/
+target/
+.vscode/
+.idea/
+*.iml
+
+# Training data and notebooks are not needed to serve the saved model.
+# No redistribution license was verified for the local CSV datasets.
+ml-service/data/raw/*.csv
+ml-service/notebook/
+
 # BlueJ files
 *.ctxt
 
