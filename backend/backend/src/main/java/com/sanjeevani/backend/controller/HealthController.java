@@ -7,7 +7,7 @@ public class HealthController {
     
     @GetMapping("/api/health")
     public String healthCheck() {
-        return "Backend is running smoothly!";
+        return "Backend is running smoothly";
     }
     
 }             
