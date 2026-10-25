@@ -21,7 +21,7 @@ class UserServiceTest {
         UserService service = new UserService(userRepository, passwordEncoder);
         UserRequestDTO request = new UserRequestDTO();
         request.setName("Sam");
-        request.setEmail("sam@example.com");
+        request.setEmail("sam12@example.com");
         request.setPassword("secret123");
 
         when(passwordEncoder.encode("secret123")).thenReturn("bcrypt-hash");
