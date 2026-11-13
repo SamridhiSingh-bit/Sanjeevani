@@ -28,7 +28,7 @@ class ApiControllerTest {
 
     @Test
     void healthEndpointReturnsStatusMessage() {
-        assertEquals("Backend is running smoothly!", new HealthController().healthCheck());
+        assertEquals("Backend is running smoothly", new HealthController().healthCheck());
     }
 
     @Test

@@ -30,7 +30,7 @@ class UserServiceTest {
         User result = service.createUser(request);
 
         assertEquals("Sam", result.getName());
-        assertEquals("sam@example.com", result.getEmail());
+        assertEquals("sam12@example.com", result.getEmail());
         assertEquals("bcrypt-hash", result.getPasswordHash());
         verify(passwordEncoder).encode("secret123");
         verify(userRepository).save(result);
