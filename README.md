@@ -6,7 +6,7 @@ Sanjeevani is an AI-assisted personal health journal for recording everyday well
 
 ## Live Demo
 <img width="1621" height="820" alt="image" src="https://github.com/user-attachments/assets/10370689-48a9-49c3-96f6-5b0598e4d99c" />
-
+<img width="1495" height="403" alt="Screenshot 2026-11-13 210022" src="https://github.com/user-attachments/assets/5a5eafe9-142c-44b2-9b2f-b819cfc1bcb8" />
 
 - **Application:** [sanjeevani-hazel.vercel.app](https://sanjeevani-hazel.vercel.app/)
 - **Backend health:** [sanjeevani-backend-xbst.onrender.com/api/health](https://sanjeevani-backend-xbst.onrender.com/api/health)
