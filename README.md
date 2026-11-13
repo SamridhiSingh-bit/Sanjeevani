@@ -1,19 +1,45 @@
 # Sanjeevani
 
-Sanjeevani is an AI-assisted personal health logging, wellness tracking, and health-pattern analysis portfolio MVP. It brings daily wellness notes, vital readings, and symptom observations together with a small dataset-based pattern classifier.
+Sanjeevani is an AI-assisted personal health journal for recording everyday wellness, vital readings, and symptoms. A small machine-learning service can identify patterns in symptom names based on its training data.
 
-> **Responsible use:** Sanjeevani is not a medical diagnosis system and does not provide medical advice. Model outputs are pattern classifications based on the training dataset. Confidence is not medical certainty. Consult a qualified healthcare professional about medical concerns.
+> **Responsible use:** Sanjeevani is a portfolio demo, not a medical diagnosis system and not a source of medical advice. Pattern results describe the model's training data; they are not medical conclusions. Consult a qualified healthcare professional about health concerns, and do not enter sensitive personal health information.
+
+## Live Demo
+<img width="1621" height="820" alt="image" src="https://github.com/user-attachments/assets/10370689-48a9-49c3-96f6-5b0598e4d99c" />
+
+
+- **Application:** [sanjeevani-hazel.vercel.app](https://sanjeevani-hazel.vercel.app/)
+- **Backend health:** [sanjeevani-backend-xbst.onrender.com/api/health](https://sanjeevani-backend-xbst.onrender.com/api/health)
+- **ML service health:** [sanjeevani-ml.onrender.com/health](https://sanjeevani-ml.onrender.com/health)
+
+## Screenshots
+
+Add your screenshots under `docs/screenshots/`, then replace the comments below with Markdown image links. For example: `![Dashboard](docs/screenshots/dashboard.png)`.
+
+### Dashboard
+
+<!-- Add the dashboard screenshot here. -->
+
+### Profile setup
+
+<!-- Add the profile setup screenshot here. -->
+
+### Wellness and health logs
+
+<!-- Add a wellness, vitals, or symptoms screenshot here. -->
+
+### Symptom patterns
+
+<!-- Add the symptom pattern analysis screenshot here. -->
 
 ## Features
 
-- Health profile and user registration
-- Wellness tracking for sleep, hydration, mood, stress, and activity
-- Personal vital tracking
-- Symptom and symptom-log recording
-- Dashboard totals, latest entries, and a recent sleep trend
-- AI-assisted symptom-pattern classification using the saved Logistic Regression model
-- Transparent model version, confidence, and unrecognized-feature reporting
-- PostgreSQL persistence through Spring Data JPA
+- Create a demo profile in the browser
+- Record wellness details such as sleep, hydration, mood, stress, and activity
+- Track vital readings and symptoms
+- Review dashboard totals, recent entries, and a sleep trend
+- Request dataset-based symptom-pattern classification
+- See model metadata, confidence, and unrecognized symptom names
 
 ## Architecture
 
@@ -21,7 +47,7 @@ Sanjeevani is an AI-assisted personal health logging, wellness tracking, and hea
 flowchart TD
     React[React + Vite frontend]
     Spring[Spring Boot REST API]
-    DB[(PostgreSQL)]
+    DB[(In-memory H2)]
     ML[FastAPI pattern service]
     Model[scikit-learn Logistic Regression]
     React --> Spring
@@ -32,27 +58,27 @@ flowchart TD
 
 ## Tech Stack
 
-- Java 21, Spring Boot, Spring Data JPA, Spring Security
-- PostgreSQL
-- Python, FastAPI, scikit-learn, joblib
-- React, Vite
+- **Frontend:** React, Vite, lucide-react
+- **Backend:** Java 21, Spring Boot, Spring Data JPA, Spring Security
+- **Backend storage:** H2 in-memory database
+- **ML service:** Python, FastAPI, scikit-learn, joblib
 
-## Running Locally
+## Run Locally
 
-Start PostgreSQL and create the `sanjeevani_db` database. Configure the backend from the workspace root in PowerShell:
+Requirements: Java 21 or newer, Python, and Node.js/npm.
+
+Start each component in a separate PowerShell terminal from the repository root.
+
+### 1. Backend
 
 ```powershell
-$env:DB_URL = "jdbc:postgresql://localhost:5432/sanjeevani_db"
-$env:DB_USERNAME = "postgres"
-$env:DB_PASSWORD = "<your-local-database-password>"
-$env:PORT = "8080"
 Set-Location backend/backend
 ./mvnw.cmd spring-boot:run
 ```
 
-Hibernate updates the existing schema with `ddl-auto=update`. The REST API is available at `http://localhost:8080`; requests are currently public for this demo MVP and do not use JWT.
+The backend starts at `http://localhost:8080`. It uses embedded H2; no database server or database credentials are required.
 
-In a second terminal, start the model service:
+### 2. ML service
 
 ```powershell
 Set-Location ml-service
@@ -63,9 +89,9 @@ $env:PORT = "8000"
 uvicorn main:app --host 0.0.0.0 --port $env:PORT
 ```
 
-The model service exposes `GET /health` and `POST /predict`. Prediction requests contain symptom names, for example `{"symptoms":["headache","fatigue"]}`. Unknown symptom names are reported and ignored. The classifier reports a training-data pattern, not a user's diagnosis.
+The ML service starts at `http://localhost:8000`. It provides `GET /health` and `POST /predict`.
 
-In another terminal, start the frontend:
+### 3. Frontend
 
 ```powershell
 Set-Location frontend
@@ -74,30 +100,52 @@ npm install
 npm run dev
 ```
 
-The Vite development server prints its local URL. `.env.local` can set `VITE_API_BASE_URL` and `VITE_ML_BASE_URL`; defaults are `http://localhost:8080` and `http://localhost:8000`.
-
-The first frontend visit creates a demo profile. Its ID is saved in the current browser for subsequent log submissions. The MVP has no sign-in or per-user access controls; do not use real sensitive health information.
+Vite prints the local frontend URL. The example environment file points the frontend to the local backend and ML service. Override `VITE_API_BASE_URL` or `VITE_ML_BASE_URL` in `.env.local` if your services use different URLs.
 
 ## API Overview
 
 | Method | Path | Purpose |
 | --- | --- | --- |
 | GET | `/api/health` | Backend health check |
-| POST | `/api/users` | Register a user |
-| POST, GET | `/api/profile`, `/api/profile/{id}` | Create and retrieve a health profile |
-| POST, GET | `/api/wellness` | Create and list wellness logs |
-| POST, GET | `/api/vitals` | Create and list vital logs |
-| POST, GET | `/api/symptoms` | Create and list symptom definitions |
-| POST, GET | `/api/symptom-logs` | Create and list symptom logs |
-| GET | `/api/dashboard` | Log counts and latest wellness, vital, and symptom entries |
+| POST | `/api/users` | Create a demo user profile |
+| POST, GET | `/api/profile`, `/api/profile/{id}` | Create or retrieve a health profile |
+| POST, GET | `/api/wellness` | Create or list wellness logs |
+| POST, GET | `/api/vitals` | Create or list vital logs |
+| POST, GET | `/api/symptoms` | Create or list symptom definitions |
+| POST, GET | `/api/symptom-logs` | Create or list symptom logs |
+| GET | `/api/dashboard` | Dashboard totals and latest entries |
 | GET | `/health` | ML service health check |
-| POST | `/predict` | Dataset-based symptom-pattern classification |
+| POST | `/predict` | Classify a symptom-name pattern |
 
 ## Deployment
 
-- **Frontend → Vercel:** set the project root to `frontend`, build with `npm run build`, output `dist`. Configure `VITE_API_BASE_URL` and `VITE_ML_BASE_URL` with the deployed service URLs.
-- **Backend → Render:** create a Java 21 web service rooted at `backend/backend`. Build with `./mvnw clean package -DskipTests`; start with `java -jar target/backend-0.0.1-SNAPSHOT.jar`. Set `DB_URL` to the JDBC form `jdbc:postgresql://<host>:<port>/<database>` (prepend `jdbc:` to Render's PostgreSQL URL), and set `DB_USERNAME`, `DB_PASSWORD`, and `CORS_ALLOWED_ORIGIN` to the database credentials and Vercel origin. Render supplies `PORT`.
-- **ML service → Render:** create a Python web service rooted at `ml-service`. Build with `pip install -r requirements.txt`; start with `uvicorn main:app --host 0.0.0.0 --port $PORT`. Set `CORS_ALLOWED_ORIGIN` to the Vercel origin. Keep both saved model files in the service repository under `models/`.
-- **Database → PostgreSQL/Render:** create the database, then use its internal connection URL, username, and password as the backend `DB_*` environment variables. Never put secrets in frontend variables or source files.
+### Frontend — Vercel
 
-Configure backend and ML CORS origins to match the exact deployed frontend origin. After deployment, verify the service health endpoints and submit a demo log from the frontend.
+- Set the project root to `frontend`.
+- Build command: `npm run build`.
+- Output directory: `dist`.
+- Set `VITE_API_BASE_URL` to the deployed backend base URL, such as `https://sanjeevani-backend-xbst.onrender.com`.
+- Set `VITE_ML_BASE_URL` to the deployed ML service base URL, such as `https://sanjeevani-ml.onrender.com`.
+- Redeploy the frontend after changing Vite environment variables.
+
+### Backend — Render
+
+- Use a Docker web service with root directory `backend/backend`; the included Dockerfile builds and runs the Java 21 application.
+- Set `CORS_ALLOWED_ORIGIN` to the exact frontend origin: `https://sanjeevani-hazel.vercel.app`.
+- Render supplies `PORT`.
+- No `DB_URL`, `DB_USERNAME`, or `DB_PASSWORD` is needed for the current in-memory H2 configuration.
+
+### ML service — Render
+
+- Set the service root directory to `ml-service`.
+- Install dependencies with `pip install -r requirements.txt`.
+- Start with `uvicorn main:app --host 0.0.0.0 --port $PORT`.
+- Set `CORS_ALLOWED_ORIGIN` to the exact Vercel frontend origin.
+- Keep the model files in `ml-service/models/`.
+
+## Demo Limitations
+
+- The backend uses an **in-memory database**. Profiles and journal entries are cleared whenever the backend restarts or redeploys.
+- The demo has no sign-in or per-user access controls. User IDs are stored in the current browser.
+- Do not use the app to store real or sensitive health information.
+- Model output is a dataset-based pattern classification, not a diagnosis.
